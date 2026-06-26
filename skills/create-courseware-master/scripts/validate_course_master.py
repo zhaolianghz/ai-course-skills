@@ -38,6 +38,16 @@ def directory_items(text: str) -> list[str]:
     return []
 
 
+def directory_has_double_numbering(text: str) -> list[str]:
+    """Detect 目录 items like '1、1.' where a hand-written N、 is followed by a markdown N. prefix."""
+    offenders = []
+    for line in text.splitlines():
+        stripped = line.strip()
+        if re.match(r"^\d+、\s*\d+\.\s+", stripped):
+            offenders.append(stripped)
+    return offenders
+
+
 def numbered_headings_are_continuous(heads: list[str]) -> bool:
     numbers = []
     for head in heads:
@@ -57,6 +67,10 @@ def validate(path: Path) -> list[str]:
 
     if not re.search(r"^# .+", text, re.M):
         errors.append("missing level-1 title")
+ 
+    double_numbered = directory_has_double_numbering(text)
+    if double_numbered:
+        errors.append("目录条目出现双序号（N、N.），飞书会叠加自动编号: " + "; ".join(double_numbered[:3]))
 
     heads = headings(text)
     if not heads:
