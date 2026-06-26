@@ -22,6 +22,7 @@ class CoursewareSkillPackageTests(unittest.TestCase):
 
         for rel in [
             "references/checkpoints.md",
+            "references/ima-sourcing.md",
             "references/markdown-master.md",
             "references/index-update.md",
             "references/html-rendering.md",
@@ -30,6 +31,19 @@ class CoursewareSkillPackageTests(unittest.TestCase):
             "scripts/validate_course_master.py",
         ]:
             self.assertTrue((SKILL / rel).exists(), f"missing bundled resource: {rel}")
+
+    def test_ima_sourcing_gate_is_explicit(self):
+        skill_text = (SKILL / "SKILL.md").read_text(encoding="utf-8")
+        sourcing = (SKILL / "references" / "ima-sourcing.md").read_text(encoding="utf-8")
+
+        self.assertIn("IMA-first", skill_text)
+        self.assertIn("references/ima-sourcing.md", skill_text)
+        self.assertIn("不允许进入大纲阶段", sourcing)
+        self.assertIn("知识库", sourcing)
+        self.assertIn("关键词", sourcing)
+        self.assertIn("未命中", sourcing)
+        self.assertIn("待审核", sourcing)
+        self.assertIn("不要直接覆盖正式知识库", sourcing)
 
     def test_courseware_schema_contains_all_course_types(self):
         schema = json.loads((SKILL / "schemas" / "courseware-fields.schema.json").read_text(encoding="utf-8"))

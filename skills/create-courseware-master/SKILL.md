@@ -18,7 +18,7 @@ description: Use when the user asks to create a courseware master, write a lesso
 
 1. **选题定位**：读 `课程/课程池总索引-V1.5.md`，确认 KP 编码、课程分类、适学对象、先修和边界。
 2. **卡点 1**：按 `references/checkpoints.md` 输出定位确认，等用户确认后继续。
-3. **取材**：优先读公司沉淀/课程大纲/仓库已有课件；时效内容用官方源并记录日期。IMA 可用时使用 IMA，不可用时在报告中标明降级。
+3. **取材**：执行 **IMA-first** 证据门禁，先按 `references/ima-sourcing.md` 搜公司沉淀并记录知识库、关键词、命中/未命中；再读仓库资料和官方/Web 资料。未留下 IMA 证据时，不要进入大纲阶段。
 4. **写骨架**：先只写标题、定位、目录、各级 heading 和一句话摘要。正文不要展开。
 5. **卡点 2**：按 `references/checkpoints.md` 输出结构确认，等用户确认后填正文。
 6. **填正文**：按 `references/markdown-master.md` 的母版结构写学员可见内容。
@@ -29,6 +29,7 @@ description: Use when the user asks to create a courseware master, write a lesso
 ## 需要读取的参考
 
 - `references/checkpoints.md`：两个人工卡点的固定输出格式。
+- `references/ima-sourcing.md`：IMA-first 取材门禁、过期判定和知识库待审核更新机制。
 - `references/markdown-master.md`：markdown 母版结构、正文边界和写作要求。
 - `references/index-update.md`：课程池索引更新与计数校验。
 - `references/html-rendering.md`：结构化 JSON、schema 校验和 HTML 渲染。
@@ -50,7 +51,8 @@ awk -F'|' '/^\| [0-9]+\.0 /{g+=$3;a+=$4;b+=$5;c+=$6} END{print "课数="g" ✅="
 ## 完成后报告
 
 - 产出文件路径与覆盖的 KP。
-- 取材来源、数据日期、IMA 是否启用。
+- IMA 取材记录：搜索知识库、关键词、命中/未命中、IMA 是否启用。
+- 外部/官方资料来源、数据日期、是否需要生成 IMA 待审核更新候选。
 - 自检命令结果和索引计数校验结果。
 - 若渲染 HTML：字段 JSON 路径、成品 HTML 路径、剩余截图位数。
 - 留给人工门禁的事项：本 skill 不做上线确认、内审评分或讲师个性化字段填充。

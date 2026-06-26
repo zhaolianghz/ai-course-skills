@@ -12,7 +12,7 @@
 - "给某知识点出课件"
 - "把某门待建课做出来"
 
-主流程:选题定位 → 取材 → 写母版 → 自检 → 登记索引。  
+主流程:选题定位 → IMA-first 取材 → 写母版 → 自检 → 登记索引。  
 可选流程:字段 JSON → schema 校验 → cobalt-grid HTML 课件。
 
 ### 安装
@@ -33,11 +33,12 @@ cp -R skills/create-courseware-master <project>/.codex/skills/
 
 ### 内置资源
 
-- `references/`: 两个人工卡点、markdown 母版、索引更新、HTML 渲染说明。
+- `references/`: 两个人工卡点、IMA-first 取材门禁、markdown 母版、索引更新、HTML 渲染说明。
 - `schemas/courseware-fields.schema.json`: 五类课程的字段要求。
 - `scripts/validate_course_master.py`: markdown 母版机器自检。
 - `scripts/validate_courseware_fields.py`: 课件字段 JSON 校验。
 
 ### 依赖(取材步骤需要,需自行配置)
-- 可选:`ima-skills`(读 IMA 知识库)+ IMA 凭证(`~/.config/ima/`)。
+- 可选但优先:`ima-skills`(读 IMA 知识库)+ IMA 凭证(`~/.config/ima/`)。
 - 未配置 IMA 时,取材降级为读仓库课程资料和官方网页,并在完成报告中标明风险。
+- IMA 内容过旧时,官网/Web 资料只能生成“待审核更新候选”,不要直接覆盖正式知识库。
