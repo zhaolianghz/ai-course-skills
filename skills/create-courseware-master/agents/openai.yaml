@@ -1,0 +1,7 @@
+interface:
+  display_name: "Courseware Master"
+  short_description: "Create structured courseware masters from KP topics"
+  default_prompt: "Use $create-courseware-master to create a markdown courseware master for a KP topic."
+
+policy:
+  allow_implicit_invocation: true
