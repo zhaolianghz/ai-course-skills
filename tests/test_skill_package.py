@@ -21,7 +21,7 @@ class CoursewareSkillPackageTests(unittest.TestCase):
         self.assertLess(len(frontmatter), 900)
 
         for rel in [
-            "references/checkpoints.md",
+            "references/decision-points.md",
             "references/ima-sourcing.md",
             "references/markdown-master.md",
             "references/index-update.md",
@@ -44,6 +44,18 @@ class CoursewareSkillPackageTests(unittest.TestCase):
         self.assertIn("未命中", sourcing)
         self.assertIn("待审核", sourcing)
         self.assertIn("不要直接覆盖正式知识库", sourcing)
+
+    def test_decision_points_are_explicit(self):
+        skill_text = (SKILL / "SKILL.md").read_text(encoding="utf-8")
+        decision_points = (SKILL / "references" / "decision-points.md").read_text(encoding="utf-8")
+
+        self.assertIn("决策点", skill_text)
+        self.assertNotIn("卡点", skill_text)
+        self.assertIn("决策点 1：选题定位决策", decision_points)
+        self.assertIn("决策点 2：大纲结构决策", decision_points)
+        self.assertIn("确认进入取材", decision_points)
+        self.assertIn("确认写正文", decision_points)
+        self.assertIn("唯一行动请求", decision_points)
 
     def test_courseware_schema_contains_all_course_types(self):
         schema = json.loads((SKILL / "schemas" / "courseware-fields.schema.json").read_text(encoding="utf-8"))

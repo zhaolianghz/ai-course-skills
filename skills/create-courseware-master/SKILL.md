@@ -17,10 +17,10 @@ description: Use when the user asks to create a courseware master, write a lesso
 ## 主流程
 
 1. **选题定位**：读 `课程/课程池总索引-V1.5.md`，确认 KP 编码、课程分类、适学对象、先修和边界。
-2. **卡点 1**：按 `references/checkpoints.md` 输出定位确认，等用户确认后继续。
+2. **决策点 1**：按 `references/decision-points.md` 输出选题定位决策，等用户明确回复 `确认进入取材` 后继续。
 3. **取材**：执行 **IMA-first** 证据门禁，先按 `references/ima-sourcing.md` 搜公司沉淀并记录知识库、关键词、命中/未命中；再读仓库资料和官方/Web 资料。未留下 IMA 证据时，不要进入大纲阶段。
 4. **写骨架**：先只写标题、定位、目录、各级 heading 和一句话摘要。正文不要展开。
-5. **卡点 2**：按 `references/checkpoints.md` 输出结构确认，等用户确认后填正文。
+5. **决策点 2**：按 `references/decision-points.md` 输出大纲结构决策，等用户明确回复 `确认写正文` 后填正文。
 6. **填正文**：按 `references/markdown-master.md` 的母版结构写学员可见内容。
 7. **自检**：运行 `scripts/validate_course_master.py <markdown-file>`，并人工检查 KP 边界、案例齐全和时效声明。
 8. **登记索引**：按 `references/index-update.md` 更新课程池两处记录和三处计数。
@@ -28,7 +28,7 @@ description: Use when the user asks to create a courseware master, write a lesso
 
 ## 需要读取的参考
 
-- `references/checkpoints.md`：两个人工卡点的固定输出格式。
+- `references/decision-points.md`：两个人工决策点的固定 STOP 输出格式和通过条件。
 - `references/ima-sourcing.md`：IMA-first 取材门禁、过期判定和知识库待审核更新机制。
 - `references/markdown-master.md`：markdown 母版结构、正文边界和写作要求。
 - `references/index-update.md`：课程池索引更新与计数校验。

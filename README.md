@@ -33,7 +33,7 @@ cp -R skills/create-courseware-master <project>/.codex/skills/
 
 ### 内置资源
 
-- `references/`: 两个人工卡点、IMA-first 取材门禁、markdown 母版、索引更新、HTML 渲染说明。
+- `references/`: 两个人工决策点、IMA-first 取材门禁、markdown 母版、索引更新、HTML 渲染说明。
 - `schemas/courseware-fields.schema.json`: 五类课程的字段要求。
 - `scripts/validate_course_master.py`: markdown 母版机器自检。
 - `scripts/validate_courseware_fields.py`: 课件字段 JSON 校验。
