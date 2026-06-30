@@ -1,6 +1,6 @@
-# 焕燃科技 · WorkBuddy Skills
+# 焕燃科技 · AI Coding Skills
 
-公司课程研发用的 WorkBuddy 技能集。
+公司课程研发用的 AI Coding 技能集（Claude Code / Codex / WorkBuddy 通用）。
 
 ## Skills
 
@@ -35,7 +35,13 @@
 
 ## 安装
 
-将 Skills 目录放到 `~/.workbuddy/skills/` 下，WorkBuddy 自动发现并加载。
+| 平台 | 路径 |
+|------|------|
+| WorkBuddy | `~/.workbuddy/skills/` |
+| Claude Code | `.claude/skills/` |
+| Codex | `.codex/skills/`（或按 Codex 约定） |
+
+放到对应目录下即可被自动发现加载。
 
 ## 依赖
 
