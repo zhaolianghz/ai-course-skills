@@ -194,6 +194,30 @@ cd /path/to/node-workspace && npm install pptxgenjs react-icons react react-dom 
 | 文本溢出卡片 | 减少要点字数(每条 ≤30 字),字号 ≥14pt |
 | 生成后被 Office 报"需修复" | 用 `slide.background = { fill: "#FFFFFF" }` 显式设背景,避免透明导致兼容报错 |
 
+#### 6c 推送飞书知识库(必做)
+
+课件生成后,上传到飞书知识库「焕燃课程 → 课程待审区」方便审核和分发。
+
+```bash
+cd 课程/<分类>/ && WIKI_NODE=OiGEw8cnbiJqXWkKyL8ci5VNnae
+
+# HTML 课件 → 直接上传
+lark-cli drive +upload --as user --file "课件.html" --wiki-token "$WIKI_NODE"
+
+# PPTX 课件 → 上传后可在飞书直接预览
+lark-cli drive +upload --as user --file "课件.pptx" --wiki-token "$WIKI_NODE"
+
+# Markdown 母版 → 上传留底
+lark-cli drive +upload --as user --file "完全指南.md" --wiki-token "$WIKI_NODE"
+
+# SVG 配图 → 批量上传
+for f in 配图/*.svg; do lark-cli drive +upload --as user --file "$f" --wiki-token "$WIKI_NODE"; done
+```
+
+- 目标位置:**焕燃课程** 知识库(space_id: `7654852563577113803`) → **课程待审区**(node_token: `OiGEw8cnbiJqXWkKyL8ci5VNnae`)
+- 用 `lark-cli wiki +node-list --as user --space-id 7654852563577113803 --parent-node-token OiGEw8cnbiJqXWkKyL8ci5VNnae` 验证上传结果
+- 返回的 `url` 即分享链接,可直接发给学员或讲师
+
 - **配图**:抽象概念(流程/结构/状态/隐喻)用示意图讲清,别让页面只有文字。具体"配什么图、怎么画"见 **课件配图 skill**(结构类型库 + shot list + SVG/cobalt 风 + QA)。
   **配不出真图也别留白板**:课件配图 有三级降级——抽象概念画 cobalt SVG;来不及/批量起稿用占位卡;需插画但无 Key 用提示词占位。一行出卡:
   ```bash
