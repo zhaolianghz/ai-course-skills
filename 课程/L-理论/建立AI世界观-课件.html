@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>建立AI世界观</title>
+<style>
+  /* ===========================================
+     FIXED 16:9 STAGE (from frontend-slides viewport-base.css)
+     Slides authored at 1920×1080, scaled as a whole.
+     =========================================== */
+  html, body {
+    width: 100%; height: 100%; margin: 0; overflow: hidden;
+    background: #1a1a1a;
+  }
+  .deck-viewport {
+    position: fixed; inset: 0; overflow: hidden; background: #1a1a1a;
+  }
+  .deck-stage {
+    position: absolute; left: 0; top: 0;
+    width: 1920px; height: 1080px; overflow: hidden;
+    transform-origin: 0 0;
+    background: var(--bg);
+  }
+  .slide {
+    position: absolute; inset: 0;
+    width: 1920px; height: 1080px; overflow: hidden;
+    display: flex; align-items: flex-start; justify-content: center;
+    padding: 96px 128px;
+    visibility: hidden; opacity: 0; pointer-events: none;
+    background: var(--bg);
+  }
+  .slide.visible {
+    visibility: visible; opacity: 1; pointer-events: auto; z-index: 1;
+  }
+  img, video, canvas, svg { max-width: 100%; max-height: 100%; }
+
+  /* ===========================================
+     THEME
+     =========================================== */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --blue: #1F2BE0; --blue-light: #EEEDFE; --grey: #888780;
+    --green: #0d6b3f; --green-light: #EAF3DE;
+    --red: #d6442c; --red-light: #FCEBEB;
+    --amber: #BA7517; --amber-light: #FAEEDA;
+    --bg: #FAF9F5; --card: #FFFFFF;
+  }
+
+  /* ===========================================
+     SLIDE STYLES (authored at 1920×1080)
+     =========================================== */
+  .slide-title { text-align: center; align-items: center !important; justify-content: center !important; }
+  .slide-title h1 { font-size: 80px; font-weight: 700; color: #111; margin-bottom: 24px; letter-spacing: -1.5px; }
+  .slide-title .sub { font-size: 32px; color: var(--grey); margin-bottom: 16px; }
+  .slide-title .tag { display: inline-block; background: var(--blue-light); color: var(--blue);
+    font-size: 24px; padding: 8px 28px; border-radius: 40px; margin-top: 24px; }
+
+  .slide-content { width: 100%; height: 100%; }
+  .slide-content h2 { font-size: 48px; font-weight: 700; color: #111; margin-bottom: 48px; letter-spacing: -1px; }
+  .slide-content p { font-size: 30px; color: #333; line-height: 1.65; margin-bottom: 24px; }
+  .slide-content .highlight { background: var(--blue-light); padding: 4px 16px; border-radius: 8px; color: var(--blue); font-weight: 600; }
+
+  .flex-row { display: flex; gap: 48px; }
+  .col { flex: 1; }
+
+  .card { background: var(--card); border-radius: 24px; padding: 36px 42px; border: 1px solid #e8e8e8; }
+  .card.green { border-left: 8px solid var(--green); background: var(--green-light); }
+  .card.amber { border-left: 8px solid var(--amber); background: var(--amber-light); }
+  .card.red { border-left: 8px solid var(--red); background: var(--red-light); }
+  .card h3 { font-size: 32px; font-weight: 700; margin-bottom: 18px; }
+  .card p, .card li { font-size: 26px; color: #444; line-height: 1.6; }
+  .card ul { list-style: none; padding: 0; }
+  .card ul li { padding: 6px 0; }
+  .card ul li::before { content: "· "; color: var(--grey); }
+  .card.green h3 { color: var(--green); }
+  .card.amber h3 { color: var(--amber); }
+  .card.red h3 { color: var(--red); }
+
+  .big-quote { font-size: 48px; color: var(--blue); line-height: 1.6; text-align: center; font-weight: 600; padding: 0 80px; }
+
+  .diagram { width: 100%; display: flex; justify-content: center; }
+  .diagram img { width: 100%; height: auto; max-height: 600px; object-fit: contain; }
+
+  .logo { position: absolute; top: 36px; right: 48px; font-size: 24px; color: #ccc; font-weight: 600; letter-spacing: 2px; z-index: 10; }
+
+  /* ===========================================
+     CONTROLS (outside stage, fixed on screen)
+     =========================================== */
+  .deck-controls {
+    position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%);
+    z-index: 1000; display: flex; align-items: center; gap: 12px;
+  }
+  .deck-controls button {
+    background: rgba(255,255,255,.9); border: 1px solid #ddd; border-radius: 24px;
+    padding: 8px 28px; font-size: 14px; cursor: pointer;
+    color: #555; font-family: inherit; transition: all .15s;
+  }
+  .deck-controls button:hover { border-color: var(--blue); color: var(--blue); }
+  .deck-controls .dots { display: flex; align-items: center; gap: 6px; margin: 0 8px; }
+  .deck-controls .dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,.4); cursor: pointer; }
+  .deck-controls .dot.active { background: var(--blue); }
+  .page-num {
+    position: fixed; bottom: 32px; left: 32px;
+    font-size: 14px; color: rgba(255,255,255,.5); z-index: 1000;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+
+  /* Print */
+  @media print {
+    html, body { width: 1920px; height: auto; overflow: visible; background: #fff; }
+    .deck-viewport { position: static; overflow: visible; background: #fff; }
+    .deck-stage { position: static; width: auto; height: auto; transform: none !important; background: none; }
+    .slide { position: relative; display: block !important; visibility: visible !important; opacity: 1 !important; pointer-events: auto !important; break-after: page; }
+    .slide:last-child { break-after: auto; }
+    .deck-controls, .page-num { display: none !important; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.2s !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="deck-viewport">
+  <main class="deck-stage" id="deckStage">
+
+    <!-- slide 0: title -->
+    <section class="slide slide-title visible" data-index="0">
+      <div>
+        <h1>建立AI世界观</h1>
+        <p class="sub">普通人也能看懂的 AI 认知课</p>
+        <p class="sub">不写代码、不背术语。读完这门课，你能跟任何人讲清楚 AI 到底是怎么回事。</p>
+        <span class="tag">L 理论 · 零基础 · 2026.06</span>
+      </div>
+    </section>
+
+    <!-- slide 1: 什么是 AI -->
+    <section class="slide" data-index="1">
+      <div class="slide-content">
+        <h2>AI 究竟是什么？</h2>
+        <p>打开新闻全是 AI，同事在聊，朋友圈在转。你想弄明白，但每个解释都带着一堆听不懂的词。</p>
+        <p>这章只有三个比喻。看完它们，你就能跟任何人解释清楚 AI 是什么。</p>
+        <div class="diagram" style="margin-top:32px;">
+          <img src="配图/ai-三幅面孔.svg" alt="AI的三幅面孔">
+        </div>
+      </div>
+    </section>
+
+    <!-- slide 2: 图书馆人 -->
+    <section class="slide" data-index="2">
+      <div class="slide-content">
+        <h2>比喻一：读过整个图书馆但没出过门</h2>
+        <p>想象一个人，一辈子关在图书馆里。读完了每一本书、每一篇文章。</p>
+        <p>你问他「巴黎怎么样」，他能告诉你铁塔多高、可颂怎么做——因为他读过所有关于巴黎的文字。</p>
+        <p>但他<span class="highlight">从没去过巴黎</span>。他说的每句话都是从书里拼出来的，不是亲身经历。</p>
+        <p style="color:var(--blue);font-weight:600;margin-top:36px;">AI 就这样。它的知识是「地图上的标记」，不是「踩过的路」。</p>
+      </div>
+    </section>
+
+    <!-- slide 3: 实习生 -->
+    <section class="slide" data-index="3">
+      <div class="slide-content">
+        <h2>比喻二：超级实习生</h2>
+        <p>把 AI 当成你手下干活超快但不靠谱的实习生：</p>
+        <div class="flex-row" style="margin-top:28px;">
+          <div class="col" style="display:flex;flex-direction:column;gap:24px;">
+            <div class="card green"><h3>秒出活</h3><p>你说需求他立刻出初稿</p></div>
+            <div class="card green"><h3>知识面宽</h3><p>从法律到菜谱都知道</p></div>
+          </div>
+          <div class="col" style="display:flex;flex-direction:column;gap:24px;">
+            <div class="card amber"><h3>偶尔犯错</h3><p>你得检查他的工作</p></div>
+            <div class="card amber"><h3>交代要清楚</h3><p>说模糊了他就乱猜</p></div>
+          </div>
+        </div>
+        <p style="color:var(--red);font-weight:600;margin-top:28px;font-size:28px;">活是他干的，锅是你的。最终拍板永远在你。</p>
+      </div>
+    </section>
+
+    <!-- slide 4: 填字游戏 -->
+    <section class="slide" data-index="4">
+      <div class="slide-content">
+        <h2>比喻三：填字游戏高手，不是百度</h2>
+        <p>你跟他说「床前明月」，他脑子里扫过所有读过的东西，发现<span class="highlight">「光」是那个最常跟在后面的字</span>。</p>
+        <p>他不是查出来的，是<span class="highlight">猜出来的</span>。一个字一个字猜，串成一段话。</p>
+        <p style="color:var(--red);font-weight:600;margin-top:36px;">这就是为什么 AI 有时会胡扯 —— 它不会说「我不知道」，它会编一个最像正确答案的答案。</p>
+      </div>
+    </section>
+
+    <!-- slide 5: 三色灯 -->
+    <section class="slide" data-index="5">
+      <div class="slide-content">
+        <h2>AI 能帮你做什么？</h2>
+        <p>不用记密密麻麻的清单，记住三种颜色就够了：</p>
+        <div class="diagram" style="margin-top:32px;">
+          <img src="配图/ai-三色灯.svg" alt="AI能力三色灯">
+        </div>
+      </div>
+    </section>
+
+    <!-- slide 6: 怎么说话 -->
+    <section class="slide" data-index="6">
+      <div class="slide-content">
+        <h2>怎么跟 AI 说话才管用？</h2>
+        <p>三条规则，够用一辈子。</p>
+        <div class="diagram" style="margin-top:24px;">
+          <img src="配图/ai-对话三回合.svg" alt="跟AI对话三回合">
+        </div>
+      </div>
+    </section>
+
+    <!-- slide 7: 三个场景 -->
+    <section class="slide" data-index="7">
+      <div class="slide-content">
+        <h2>三个真实场景练练手</h2>
+        <div style="display:flex;flex-direction:column;gap:24px;margin-top:36px;">
+          <div class="card"><h3 style="color:var(--blue);">场景一：整理会议纪要</h3><p>把一段凌乱的会议记录丢给 AI，让它按「议题/发言要点/未共识/行动项」整理。</p></div>
+          <div class="card"><h3 style="color:var(--blue);">场景二：跟妈妈解释 AI</h3><p>不许出现任何技术名词，用三句话解释 ChatGPT 是什么。</p></div>
+          <div class="card"><h3 style="color:var(--blue);">场景三：改催款邮件</h3><p>把太软的语气改成坚定但不失礼貌，告诉 AI「保留开头结尾，删掉不急，加明确时限」。</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- slide 8: 总结 -->
+    <section class="slide" data-index="8">
+      <div class="slide-content" style="display:flex;align-items:center;justify-content:center;">
+        <div>
+          <p class="big-quote">AI 是一根杠杆。<br>它能放大你的力气，<br>但支点永远在你手上——<br><span style="color:var(--red)">你的判断力。</span></p>
+        </div>
+      </div>
+    </section>
+
+    <div class="logo">HYREAL OPCLUB</div>
+  </main>
+</div>
+
+<!-- Controls outside stage -->
+<div class="deck-controls">
+  <button id="btnPrev">← 上一页</button>
+  <div class="dots" id="dots"></div>
+  <button id="btnNext">下一页 →</button>
+</div>
+<div class="page-num" id="pageNum">1 / 9</div>
+
+<script>
+  class SlidePresentation {
+    constructor() {
+      this.stage = document.getElementById('deckStage');
+      this.slides = document.querySelectorAll('.slide');
+      this.total = this.slides.length;
+      this.currentIdx = 0;
+
+      this.setupScale();
+      this.setupDots();
+      this.setupKeyboardNav();
+      this.setupClickNav();
+      this.setupButtonNav();
+      this.showSlide(0);
+    }
+
+    /* Scale the 1920×1080 stage to fit the window */
+    setupScale() {
+      const doScale = () => {
+        const f = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+        const x = (window.innerWidth - 1920 * f) / 2;
+        const y = (window.innerHeight - 1080 * f) / 2;
+        this.stage.style.transform = `translate(${x}px, ${y}px) scale(${f})`;
+      };
+      doScale();
+      window.addEventListener('resize', doScale);
+      window.addEventListener('orientationchange', () => setTimeout(doScale, 100));
+    }
+
+    setupDots() {
+      this.dotsEl = document.getElementById('dots');
+      for (let i = 0; i < this.total; i++) {
+        const d = document.createElement('span');
+        d.className = 'dot' + (i === 0 ? ' active' : '');
+        d.setAttribute('aria-label', '第' + (i + 1) + '页');
+        d.addEventListener('click', () => this.go(i));
+        this.dotsEl.appendChild(d);
+      }
+    }
+
+    setupKeyboardNav() {
+      document.addEventListener('keydown', e => {
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.isContentEditable) return;
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') {
+          e.preventDefault(); this.next();
+        } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+          e.preventDefault(); this.prev();
+        } else if (e.key === 'Home') {
+          e.preventDefault(); this.go(0);
+        } else if (e.key === 'End') {
+          e.preventDefault(); this.go(this.total - 1);
+        }
+      });
+    }
+
+    setupClickNav() {
+      this.stage.addEventListener('click', e => {
+        if (e.target.closest('button, a, [contenteditable]')) return;
+        const rect = this.stage.getBoundingClientRect();
+        if (e.clientX - rect.left > rect.width / 2) this.next();
+        else this.prev();
+      });
+    }
+
+    setupButtonNav() {
+      document.getElementById('btnPrev').addEventListener('click', () => this.prev());
+      document.getElementById('btnNext').addEventListener('click', () => this.next());
+    }
+
+    go(n) {
+      if (n < 0 || n >= this.total) return;
+      this.slides[this.currentIdx].classList.remove('visible');
+      this.dotsEl.children[this.currentIdx].classList.remove('active');
+      this.currentIdx = n;
+      this.slides[this.currentIdx].classList.add('visible');
+      this.dotsEl.children[this.currentIdx].classList.add('active');
+      document.getElementById('pageNum').textContent = (this.currentIdx + 1) + ' / ' + this.total;
+    }
+
+    next() { this.go(this.currentIdx + 1); }
+    prev() { this.go(this.currentIdx - 1); }
+  }
+
+  new SlidePresentation();
+</script>
+</body>
+</html>

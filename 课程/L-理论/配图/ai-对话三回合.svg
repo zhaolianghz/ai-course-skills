@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 400" width="680" height="400" role="img">
+  <title>跟 AI 对话三回合</title>
+  <desc>说清背景 → 分步迭代 → 给个例子</desc>
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+  <rect x="40" y="40" width="180" height="300" rx="14" fill="#EEEDFE" stroke="#534AB7" stroke-width="0.5"/>
+  <text x="130" y="80" text-anchor="middle" fill="#3C3489" font-size="14" font-weight="500">第一回合</text>
+  <text x="130" y="100" text-anchor="middle" fill="#888780" font-size="12">说清楚背景</text>
+  <rect x="58" y="125" width="144" height="60" rx="8" fill="#fff" stroke="#AFA9EC" stroke-width="0.5"/>
+  <text x="130" y="148" text-anchor="middle" fill="#534AB7" font-size="12">我是谁</text>
+  <text x="130" y="166" text-anchor="middle" fill="#888780" font-size="11">(角色)</text>
+  <rect x="58" y="195" width="144" height="60" rx="8" fill="#fff" stroke="#AFA9EC" stroke-width="0.5"/>
+  <text x="130" y="218" text-anchor="middle" fill="#534AB7" font-size="12">在什么情况下</text>
+  <text x="130" y="236" text-anchor="middle" fill="#888780" font-size="11">(场景)</text>
+  <rect x="58" y="265" width="144" height="60" rx="8" fill="#fff" stroke="#AFA9EC" stroke-width="0.5"/>
+  <text x="130" y="288" text-anchor="middle" fill="#534AB7" font-size="12">需要什么结果</text>
+  <text x="130" y="306" text-anchor="middle" fill="#888780" font-size="11">(目标)</text>
+  <line x1="220" y1="190" x2="260" y2="190" stroke="#534AB7" stroke-width="1.5" marker-end="url(#arr)"/>
+  <rect x="260" y="80" width="180" height="240" rx="14" fill="#EEEDFE" stroke="#534AB7" stroke-width="0.5"/>
+  <text x="350" y="120" text-anchor="middle" fill="#3C3489" font-size="14" font-weight="500">第二回合</text>
+  <text x="350" y="140" text-anchor="middle" fill="#888780" font-size="12">分步来，别一口气</text>
+  <rect x="278" y="165" width="144" height="40" rx="8" fill="#EAF3DE" stroke="#3B6D11" stroke-width="0.5"/>
+  <text x="350" y="189" text-anchor="middle" fill="#27500A" font-size="12">先要提纲</text>
+  <rect x="278" y="215" width="144" height="40" rx="8" fill="#EAF3DE" stroke="#3B6D11" stroke-width="0.5"/>
+  <text x="350" y="239" text-anchor="middle" fill="#27500A" font-size="12">确认方向对</text>
+  <rect x="278" y="265" width="144" height="40" rx="8" fill="#EAF3DE" stroke="#3B6D11" stroke-width="0.5"/>
+  <text x="350" y="289" text-anchor="middle" fill="#27500A" font-size="12">再要正文</text>
+  <line x1="440" y1="200" x2="480" y2="200" stroke="#534AB7" stroke-width="1.5" marker-end="url(#arr)"/>
+  <rect x="480" y="100" width="160" height="200" rx="14" fill="#EEEDFE" stroke="#534AB7" stroke-width="0.5"/>
+  <text x="560" y="140" text-anchor="middle" fill="#3C3489" font-size="14" font-weight="500">第三回合</text>
+  <text x="560" y="160" text-anchor="middle" fill="#888780" font-size="12">不会说就给例子</text>
+  <rect x="498" y="180" width="124" height="50" rx="8" fill="#E6F1FB" stroke="#185FA5" stroke-width="0.5"/>
+  <text x="560" y="200" text-anchor="middle" fill="#0C447C" font-size="12">不说"写专业点"</text>
+  <text x="560" y="218" text-anchor="middle" fill="#888780" font-size="10">太模糊</text>
+  <line x1="560" y1="230" x2="560" y2="238" stroke="#B4B2A9" stroke-width="0.5" stroke-dasharray="3,3"/>
+  <rect x="498" y="240" width="124" height="50" rx="8" fill="#EAF3DE" stroke="#3B6D11" stroke-width="0.5"/>
+  <text x="560" y="260" text-anchor="middle" fill="#27500A" font-size="12">说"参照这段话</text>
+  <text x="560" y="278" text-anchor="middle" fill="#888780" font-size="10">[贴一段你喜欢的]"</text>
+  <text x="340" y="370" text-anchor="middle" fill="#3C3489" font-size="13" font-weight="500">说清背景 → 分步来 → 给例子</text>
+  <text x="340" y="392" text-anchor="middle" fill="#888780" font-size="11">三条规则够用一辈子</text>
+</svg>
