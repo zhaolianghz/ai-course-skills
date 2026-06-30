@@ -31,7 +31,7 @@ description: |
 
 - **卡点 1(选题定位后)**:确认 KP/分类/定位/编码对不对。
 - **卡点 2(大纲+课时拆分后)**:确认结构/阶段/配比对不对。
-- 后续教案、课件属机械产出,**不卡点**,有问题完成后定点改即可。
+- **卡点 3(课件生成后)**:HTML/PPTX 产出完毕,问"是否推送到飞书焕燃课程?"。用户确认后执行 6c 推送到课程待审区。
 
 卡点用 AskUserQuestion;若不可用(headless)则输出方案、明确"回复确认/修改"后停下等回复。
 **用户说"改 X"→ 只改 X,不重跑全流程**(见末尾「完成后怎么改」)。
@@ -194,9 +194,11 @@ cd /path/to/node-workspace && npm install pptxgenjs react-icons react react-dom 
 | 文本溢出卡片 | 减少要点字数(每条 ≤30 字),字号 ≥14pt |
 | 生成后被 Office 报"需修复" | 用 `slide.background = { fill: "#FFFFFF" }` 显式设背景,避免透明导致兼容报错 |
 
-#### 6c 推送飞书知识库(必做)
+#### 6c 推送飞书知识库(卡点 3,需用户确认)
 
-课件生成后,上传到飞书知识库「焕燃课程 → 课程待审区」方便审核和分发。
+> 🚦 **卡点 3 — STOP**:课件生成完毕(6a/6b),**必须先问用户**"课件已生成完毕,是否推送到飞书焕燃课程知识库?",用户确认后才执行以下推送。
+
+课件上传到飞书知识库「焕燃课程 → 课程待审区」等待人工审核:
 
 ```bash
 cd 课程/<分类>/ && WIKI_NODE=OiGEw8cnbiJqXWkKyL8ci5VNnae
@@ -214,9 +216,20 @@ lark-cli drive +upload --as user --file "完全指南.md" --wiki-token "$WIKI_NO
 for f in 配图/*.svg; do lark-cli drive +upload --as user --file "$f" --wiki-token "$WIKI_NODE"; done
 ```
 
-- 目标位置:**焕燃课程** 知识库(space_id: `7654852563577113803`) → **课程待审区**(node_token: `OiGEw8cnbiJqXWkKyL8ci5VNnae`)
-- 用 `lark-cli wiki +node-list --as user --space-id 7654852563577113803 --parent-node-token OiGEw8cnbiJqXWkKyL8ci5VNnae` 验证上传结果
-- 返回的 `url` 即分享链接,可直接发给学员或讲师
+**飞书知识库结构**(焕燃课程 space_id: `7654852563577113803`):
+
+| 节点 | node_token | 用途 |
+|------|-----------|------|
+| 课程待审区 | `OiGEw8cnbiJqXWkKyL8ci5VNnae` | 课件生成后上传至此,等待人工审核 |
+| 定稿区 | `Ro6lwdRWIixMg3kGxrYcEbB9nmd` | 审核通过后移至此处,即正式发布 |
+
+**上传后必须做的事**:
+
+1. ✅ 用 `lark-cli wiki +node-list --as user --space-id 7654852563577113803 --parent-node-token OiGEw8cnbiJqXWkKyL8ci5VNnae` 验证上传成功
+2. ⏳ **明确告知用户**:"课件已上传至焕燃课程 → 课程待审区,**等待人工审核通过**"
+3. 📋 提醒用户:"审核通过后,请将课件移动到「定稿区」(`Ro6lwdRWIixMg3kGxrYcEbB9nmd`),即视为正式发布"
+
+返回的 `url` 即分享链接,可直接发给审核人或讲师。
 
 - **配图**:抽象概念(流程/结构/状态/隐喻)用示意图讲清,别让页面只有文字。具体"配什么图、怎么画"见 **课件配图 skill**(结构类型库 + shot list + SVG/cobalt 风 + QA)。
   **配不出真图也别留白板**:课件配图 有三级降级——抽象概念画 cobalt SVG;来不及/批量起稿用占位卡;需插画但无 Key 用提示词占位。一行出卡:
