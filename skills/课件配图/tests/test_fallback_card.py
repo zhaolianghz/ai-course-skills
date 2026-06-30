@@ -50,6 +50,24 @@ def test_compare_uses_warn_and_ink_sides():
     assert "marker-end" in svg                   # 中间箭头
 
 
+def test_system_has_core_satellites_and_relation_lines():
+    svg = fc.build("system", "模块关系")
+    assert "核心模块" in svg
+    for lbl in ("模块A", "模块B", "模块C"):
+        assert lbl in svg
+    # 3 条关系线(无箭头):核心↔左/右/底卫星
+    assert svg.count("<line ") == 3
+
+
+def test_tree_has_parent_children_and_branches():
+    svg = fc.build("tree", "层级嵌套")
+    assert "父节点" in svg
+    for lbl in ("子节点1", "子节点2", "子节点3"):
+        assert lbl in svg
+    # 树状分叉:父↓bus + 横 bus + 3 条子↓ = 5 条 line
+    assert svg.count("<line ") == 5
+
+
 def test_prompt_type_prints_prompt_text():
     p = "一台贴着问号的机器,左输入右输出,cobalt蓝+米纸底,极简大量留白"
     svg = fc.build("prompt", "黑盒隐喻", prompt=p)

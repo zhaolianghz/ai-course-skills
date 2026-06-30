@@ -34,6 +34,8 @@ TYPES = {
     "layers": "分层结构:能力栈",
     "metaphor": "概念隐喻:一个有记忆点的物件",
     "timeline": "路线/时间线:一条线串节点",
+    "system": "系统局部:核心模块 + 卫星模块(关系)",
+    "tree": "树/嵌套:父节点→子节点分叉",
     "prompt": "提示词占位(L2):印 prompt 待人工生成替换",
 }
 
@@ -55,6 +57,11 @@ def _box(x, y, w, h, label, fill=PAPER, stroke=INK, dash=False, tcolor=TEXT):
 def _arrow(x1, y1, x2, y2):
     return (f'<line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" stroke="{SOFT}" '
             f'stroke-width="4" marker-end="url(#ah)"/>')
+
+
+def _line(x1, y1, x2, y2, stroke=SOFT, w=3):
+    """无箭头连线:表"关系/分叉"(系统模块关系、树状枝),区别于 _arrow 的有向流向。"""
+    return f'<line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" stroke="{stroke}" stroke-width="{w}"/>'
 
 
 def _skeleton(kind: str) -> str:
@@ -84,6 +91,30 @@ def _skeleton(kind: str) -> str:
             _arrow(250, 305, 365, 305), _arrow(595, 305, 710, 305),
             f'<text x="200" y="290" font-size="22" fill="{MUTE}" font-family="Noto Sans SC">输入</text>',
             f'<text x="715" y="290" font-size="22" fill="{MUTE}" font-family="Noto Sans SC">输出</text>'])
+    if kind == "system":
+        # 核心模块居中 + 3 卫星模块环绕,关系线(无箭头)连核心——只画 3-5 个核心模块
+        parts = [_box(380, 245, 200, 110, "核心模块", dash=True, stroke=INK, tcolor=SOFT)]
+        for x, y, bw, bh, lbl in [(70, 255, 170, 90, "模块A"),
+                                  (720, 255, 170, 90, "模块B"),
+                                  (395, 420, 170, 80, "模块C")]:
+            parts.append(_box(x, y, bw, bh, lbl, dash=True, stroke=MUTE, tcolor=MUTE))
+        parts += [_line(380, 300, 240, 300),    # 核心←模块A
+                  _line(580, 300, 720, 300),    # 核心→模块B
+                  _line(480, 355, 480, 420)]    # 核心↓模块C
+        return "".join(parts)
+    if kind == "tree":
+        # 父节点居中顶 + 3 子节点底,树状分叉线(父↓bus → 横 bus → 各子↓)
+        parts = [_box(380, 180, 200, 90, "父节点", dash=True, stroke=INK, tcolor=SOFT)]
+        for x, y, bw, bh, lbl in [(90, 390, 180, 90, "子节点1"),
+                                  (390, 390, 180, 90, "子节点2"),
+                                  (690, 390, 180, 90, "子节点3")]:
+            parts.append(_box(x, y, bw, bh, lbl, dash=True, stroke=MUTE, tcolor=MUTE))
+        parts += [_line(480, 270, 480, 340),    # 父底↓bus
+                  _line(180, 340, 780, 340),    # 横 bus
+                  _line(180, 340, 180, 390),    # bus↓子1
+                  _line(480, 340, 480, 390),    # bus↓子2
+                  _line(780, 340, 780, 390)]    # bus↓子3
+        return "".join(parts)
     if kind == "prompt":
         return _box(130, 220, 700, 160, "生成后贴回替换", dash=True, stroke=SOFT, tcolor=SOFT)
     return _box(230, 230, 500, 140, "结构待定", dash=True, stroke=MUTE, tcolor=MUTE)

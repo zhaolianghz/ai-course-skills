@@ -135,7 +135,6 @@ description: |
 3. 截图走方案 B:成品里是截图位 + "该截什么"说明,讲师补真图。
 - 产物是 16:9 幻灯片(Hyreal OPClub logo、cobalt-grid 风格),可直接分发/传飞书。
 - **配图**:抽象概念(流程/结构/状态/隐喻)用示意图讲清,别让页面只有文字。具体"配什么图、怎么画"见 **课件配图 skill**(结构类型库 + shot list + SVG/cobalt 风 + QA)。
-- **配图**:抽象概念(流程/结构/状态/隐喻)用示意图讲清,别让页面只有文字。具体"配什么图、怎么画"见 **课件配图 skill**(结构类型库 + shot list + SVG/cobalt 风 + QA)。
   **配不出真图也别留白板**:课件配图 有三级降级——抽象概念画 cobalt SVG;来不及/批量起稿用占位卡;需插画但无 Key 用提示词占位。一行出卡:
   ```bash
   python3 .claude/skills/课件配图/scripts/fallback_card.py --type workflow --title "认知锚点一句话"
