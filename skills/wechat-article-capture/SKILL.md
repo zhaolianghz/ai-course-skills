@@ -81,7 +81,13 @@ Then present the options to the user:
 
 - If the user has **only one** knowledge base → use it silently, just confirm: `已保存到知识库「XXX」`
 - If the user has **multiple** knowledge bases → ask: `请选择要存入的知识库：` with the list of names
-- If the user has **no knowledge base** → tell them: `你还没有创建知识库，请先在 IMA 中创建一个。`
+- If the user has **no knowledge base** → ask: `你还没有知识库，需要我帮你创建一个吗？` If yes, create one first:
+
+  ```bash
+  cd SKILL_DIR && node ima_api.cjs 'openapi/wiki/v1/create_knowledge_base' '{"name":"AI笔记","description":"AI 生成笔记归档"}' '{}'
+  ```
+
+  Then use the returned `knowledge_base_id` from the response.
 
 ### Step 5: Create note and add to chosen knowledge base
 
@@ -121,6 +127,6 @@ SKILL_DIR is the directory containing `ima_api.cjs` (where the IMA skill is inst
 | No images found after scroll | Proceed with text-only note |
 | Image URLs use `#imgIndex=X` suffix | Keep as-is, they work fine |
 | Note title too long | Truncate to ~50 chars, keep key meaning |
-| User has no knowledge base | Tell user to create one in IMA first |
+| User has no knowledge base | Ask user if they want to create one; if yes, create via `openapi/wiki/v1/create_knowledge_base` then proceed |
 | User has multiple knowledge bases | Ask user which one to save to — never assume |
 | User has only one knowledge base | Use it silently, confirm with name |
