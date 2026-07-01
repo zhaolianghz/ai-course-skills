@@ -65,9 +65,27 @@ Write cleaned/restructured markdown to `/tmp/ima_article.md`. Guidelines:
 - Place images at semantically appropriate positions in the article flow
 - Keep all factual content intact
 
-### Step 4: Save to IMA note + knowledge base
+### Step 4: Query user's knowledge bases and ask which one to use
 
-Use the IMA skill (`skill_2053082144792322048`) pipeline:
+**Never hardcode a knowledge base ID.** Different users have different knowledge bases. You MUST query the user's available knowledge bases first.
+
+First, list the user's knowledge bases via IMA API:
+
+```bash
+cd SKILL_DIR && node ima_api.cjs 'openapi/wiki/v1/get_knowledge_base_list' '{}' '{}'
+```
+
+Parse the response to extract the list of `{name, knowledge_base_id}` pairs.
+
+Then present the options to the user:
+
+- If the user has **only one** knowledge base → use it silently, just confirm: `已保存到知识库「XXX」`
+- If the user has **multiple** knowledge bases → ask: `请选择要存入的知识库：` with the list of names
+- If the user has **no knowledge base** → tell them: `你还没有创建知识库，请先在 IMA 中创建一个。`
+
+### Step 5: Create note and add to chosen knowledge base
+
+Use the IMA skill pipeline with the user-chosen `KB_ID`:
 
 ```python
 import json, subprocess
@@ -75,26 +93,24 @@ import json, subprocess
 with open('/tmp/ima_article.md', 'r') as f:
     content = f.read()
 
-opts = json.dumps({'clientId': IMA_CLIENT_ID, 'apiKey': IMA_API_KEY})
-
 # Create note
 body = json.dumps({'content_format': 1, 'content': content}, ensure_ascii=False)
 result = subprocess.run(['node', 'SKILL_DIR/ima_api.cjs',
-    'openapi/note/v1/import_doc', body, opts], capture_output=True, text=True)
+    'openapi/note/v1/import_doc', body], capture_output=True, text=True)
 note_id = json.loads(result.stdout)['data']['note_id']
 
-# Add to knowledge base (use the user's knowledge_base_id)
+# Add to the user-chosen knowledge base
 body2 = json.dumps({
     'media_type': 11,
     'note_info': {'content_id': note_id},
     'title': 'ARTICLE_TITLE',
-    'knowledge_base_id': 'KB_ID'
+    'knowledge_base_id': KB_ID  # From user selection
 }, ensure_ascii=False)
 subprocess.run(['node', 'SKILL_DIR/ima_api.cjs',
-    'openapi/wiki/v1/add_knowledge', body2, opts], capture_output=True, text=True)
+    'openapi/wiki/v1/add_knowledge', body2], capture_output=True, text=True)
 ```
 
-Use the knowledge base named "AI笔记" (id: `LERMkfNdQ1T8U9cDfKfbQIrMUHHaaY7HJu1vTnebwr0=`) unless user specifies otherwise.
+SKILL_DIR is the directory containing `ima_api.cjs` (where the IMA skill is installed).
 
 ## Edge Cases
 
@@ -105,3 +121,6 @@ Use the knowledge base named "AI笔记" (id: `LERMkfNdQ1T8U9cDfKfbQIrMUHHaaY7HJu
 | No images found after scroll | Proceed with text-only note |
 | Image URLs use `#imgIndex=X` suffix | Keep as-is, they work fine |
 | Note title too long | Truncate to ~50 chars, keep key meaning |
+| User has no knowledge base | Tell user to create one in IMA first |
+| User has multiple knowledge bases | Ask user which one to save to — never assume |
+| User has only one knowledge base | Use it silently, confirm with name |
